@@ -5,7 +5,7 @@ services:
     image: getcampo/campo:latest
     command: bin/rails server -b 0.0.0.0
     volumes:
-      - ./data/storage:/app/storage
+      - ./data/uploads:/app/public/uploads
     ports:
       - 3000:3000
     env_file: .env
@@ -14,7 +14,7 @@ services:
       - redis
   worker:
     image: getcampo/campo:latest
-    command: sidekiq
+    command: bundle exec sidekiq
     env_file: .env
     depends_on:
       - postgres
