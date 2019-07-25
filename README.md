@@ -13,7 +13,7 @@ Get docker in https://www.docker.com/ .
 ### Create docker swarm
 
 ```
-$ docker swram init
+$ docker swarm init
 ```
 
 ### Create data directory
