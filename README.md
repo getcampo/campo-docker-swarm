@@ -19,7 +19,7 @@ $ docker swarm init
 ### Create data directory
 
 ```
-$ mkdir -p data/postgres
+$ mkdir -p data/uploads
 $ mkdir -p data/redis
 $ mkdir -p data/storage
 ```
