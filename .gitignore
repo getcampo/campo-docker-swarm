@@ -1,2 +1,8 @@
 .env
-data/
+
+/data/postgres/*
+!/data/postgres/.keep
+/data/redis/*
+!/data/redis/.keep
+/data/uploads/*
+!/data/uploads/.keep
