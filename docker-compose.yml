@@ -29,7 +29,3 @@ services:
     image: redis:3.2
     volumes:
       - ./data/redis:/data
-
-networks:
-  default:
-    attachable: true

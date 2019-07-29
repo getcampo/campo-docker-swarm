@@ -10,38 +10,69 @@ Notice: this template only work for single host.
 
 Get docker in https://www.docker.com/ .
 
-### Create docker swarm
+### Deploy
 
-```
-$ docker swram init
-```
+Clone this repo:
 
-### Create data directory
-
-```
-$ mkdir -p data/postgres
-$ mkdir -p data/redis
-$ mkdir -p data/storage
+```console
+$ git clone https://github.com/getcampo/campo-docker.git campo
+$ cd campo
 ```
 
-### Edit `.env`
+Edit env file:
 
-Copy `.env.example` to `.env`, and edit it for your need. Your should set `SECRET_KEY_BASE` here.
-
-### Start service
-
-```
-$ docker stack deploy -c docker-compose.yml campo
-$ docker run --network=campo_default --env-file=.env getcampo/campo:latest bin/setup
+```console
+$ cp .env.example .env
+$ vi .env
 ```
 
-Visit http://yourserver.ip:3000 and you will see campo is running.
+Set SECRET_KEY_BASE, you can generate a secret key by `docker run getcampo/campo bin/rails secret`.
 
-### Update
+Start service:
 
-When you update image version or change envs, run this commands restart services:
-
+```console
+$ docker-compose up -d
 ```
-$ docker run --network=campo_default --env-file=.env getcampo/campo:latest bin/update
-$ docker stack deploy -c docker-compose.yml campo
+
+Init db(only first deploy):
+
+```console
+$ docker-compose run web bin/rails db:setup
+```
+
+Visit http://yourserverip:3000 and you will see campo is running.
+
+### Upgrade
+
+**backup database before upgrade, see backup section**
+
+Update source code:
+
+```console
+$ git pull
+```
+
+Update service:
+
+```console
+$ docker-compose up -d
+$ docker-compose run web bin/rails db:migrate
+```
+
+Done.
+
+### Backup
+
+All data including database, attachments are store in `./data` directory, you can copy & paste directory to backup data.
+
+For safety bacup postgres, run this command to backup:
+
+```console
+$ docker-compose run web pg_dump -h postgres -U postgres -c campo_production > campo_production.sql
+```
+
+And this command to restore:
+
+```console
+$ docker-compose run web psql -h postgres -U postgres -d campo_production < campo_production.sql
 ```
