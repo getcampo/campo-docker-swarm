@@ -6,3 +6,7 @@
 !/data/redis/.keep
 /data/uploads/*
 !/data/uploads/.keep
+/data/certbot/conf/*
+!/data/certbot/conf/.keep
+/data/certbot/www/*
+!/data/certbot/www/.keep
