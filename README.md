@@ -25,8 +25,8 @@ Do not add swram nodes because this deployment depend on local volume.
 Clone this repo:
 
 ```console
-$ git clone https://github.com/getcampo/campo-docker.git campo
-$ cd campo
+$ git clone https://github.com/getcampo/campo-docker-swarm.git
+$ cd campo-docker-swarm
 ```
 
 Edit env file:
