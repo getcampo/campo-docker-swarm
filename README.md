@@ -140,3 +140,126 @@ If success, restart nginx service:
 Visit your website with `https://`, SSL should take effect.
 
 ## Cluster deployment
+
+In cluster deployment, docker swarm do less thing, only run campo web and worker containers, and give the rest to cloud provider, that includes load balance, postgres, redis and storage.
+
+Your can select a Cloud provider providing the above service, such as AWS, Google Cloud, or setup these services yourself(not in this tutorial).
+
+### Prepare cloud service
+
+Prepare following resources:
+
+- Several linux server as you need.
+- PostgresSQL
+- Redis
+- Storage(Only support AWS S3 and Google Cloud Storage)
+
+### Setup docker swarm
+
+Run this command on one server:
+
+```console
+# docker swarm init
+```
+
+This server will become manager server, and it will show how to add nodes to this swarm. Run this command on other server:
+
+```console
+# docker swarm join --token xxx host
+```
+
+Replace token and host with your environment. More infomation about docker swarm, read https://docs.docker.com/engine/swarm/ .
+
+Subsequent docker command will be run on manager server.
+
+### Deploy web and worker service
+
+Create file `docker-compose.yml` with this content:
+
+```yml
+version: '3.3'
+
+services:
+  web:
+    image: getcampo/campo:latest
+    command: bin/rails server -b 0.0.0.0
+    volumes:
+      - ./data/uploads:/app/public/uploads
+    env_file: .env
+    port:
+      - 3000:3000
+  worker:
+    image: getcampo/campo:latest
+    command: bundle exec sidekiq
+    env_file: .env
+```
+
+Create file `.env` with this content:
+
+```
+# Use for session encrypt, generate your key by
+# docker run getcampo/campo bin/rails secret
+SECRET_KEY_BASE=
+
+# PostgreSQL connection
+DATABASE_URL=postgres://username:password@host/database
+
+# Redis connection
+REDIS_URL=redis://username:password@host:6379/0
+
+# Storage service avaliable: file, aws, gcloud
+STORAGE_SERVICE=file
+
+# Storage AWS S3
+# STORAGE_AWS_ACCESS_KEY_ID=
+# STORAGE_AWS_SECRET_ACCESS_KEY=
+# STORAGE_AWS_REGION=
+# STORAGE_AWS_BUCKET=
+
+# Storage Google Cloud Storage
+# STORAGE_GCLOUD_PROJECT=
+# STORAGE_GCLOUD_BUCKET=
+# STORAGE_GCLOUD_KEYFILE_CONTENT=
+```
+
+> TODO: ENV document
+
+Now start services:
+
+```console
+# docker stack deploy -c docker-compose.yml campo
+```
+
+Run this command:
+
+```console
+# docker container ls
+```
+
+Find campo_web container name in NAME column, it will looks like `campo_web.1.xyz`, then run this command to setup db:
+
+```console
+# docker exec campo_web.1.xyz bin/rails db:setup
+```
+
+Now campo service is running, we need to expose to internet by load balance.
+
+Setup a load balance in your cloud provider, config http and https(optional) frontend, and http backend to servers 3000 port.
+
+Vist load balance's public IP or domain, you will see campo in online.
+
+### Upgrade
+
+**backup database before upgrade**
+
+When Campo release new version, change image tag in `docker-compose.yml`, then run this command to update service:
+
+```console
+# docker stack deploy -c docker-compose.yml campo
+```
+
+And this command to migarte database:
+
+```console
+# docker exec campo_web.1.xyz bin/rails db:migrate
+```
