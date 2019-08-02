@@ -23,7 +23,7 @@ services:
     image: getcampo/campo:latest
     command: bin/rails server -b 0.0.0.0
     volumes:
-      - ./data/uploads:/app/public/uploads
+      - ./data/web/uploads:/app/public/uploads
     env_file: .env
     depends_on:
       - postgres
