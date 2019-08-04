@@ -2,9 +2,9 @@
 
 This repo help you deploy Campo on docker swram.
 
-If your website have a small number of users, or only have one server, you should read [Single host deployment](). It's simple but do not scale.
+If your website have a small number of users, or only have one server, you should read [Single host deployment](#single-host-deployment). It's simple but do not scale.
 
-If your website have large number of users, and have knowledge about cloud service, please read [Cluster deployment](). It's complex but can be scale as you need.
+If your website have large number of users, and have knowledge about cloud service, please read [Cluster deployment](#cluster-deployment). It's complex but can be scale as you need.
 
 ## Prepare
 
