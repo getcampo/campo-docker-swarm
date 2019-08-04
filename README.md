@@ -44,7 +44,7 @@ Create docker stack:
 # docker stack deploy -c docker-compose.yml campo
 ```
 
-Now we need to setup databse. Because docker stack do not privide simple way to run command in container, so first we need to find container ID by this command:
+Now we need to setup databse. Because docker stack do not provide simple way to run command in container, so first we need to find container ID by this command:
 
 ```console
 # docker container ls
