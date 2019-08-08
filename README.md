@@ -165,7 +165,7 @@ Run this command on one server:
 This server will become manager server, and it will show how to add nodes to this swarm. Run this command on other server:
 
 ```console
-# docker swarm join --token xxx host
+# docker swarm join --token xxx host:port
 ```
 
 Replace token and host with your environment. More infomation about docker swarm, read https://docs.docker.com/engine/swarm/ .
